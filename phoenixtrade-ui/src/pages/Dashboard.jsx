@@ -71,6 +71,9 @@ export default function Dashboard() {
                                 <Square className="mr-2" size={20} /> Stop
                             </button>
                         </div>
+                        <p className="text-sm text-gray-400">
+                            {botStatus.strategy ? botStatus.strategy.replace(/OctoBot/g, 'Phoenix') : 'No active strategy'}
+                        </p>
                     </div>
 
                     {/* Profit */}

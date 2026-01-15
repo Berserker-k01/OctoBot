@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+
+import { authApi } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -13,16 +13,45 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
+        const checkAuth = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const user = await authApi.getProfile();
+                    setCurrentUser(user);
+                } catch (error) {
+                    console.error("Auth check failed:", error);
+                    localStorage.removeItem('token');
+                }
+            }
             setLoading(false);
-        });
-
-        return unsubscribe;
+        };
+        checkAuth();
     }, []);
 
+    const login = async (email, password) => {
+        const data = await authApi.login(email, password);
+        localStorage.setItem('token', data.token);
+        setCurrentUser(data.user);
+        return data.user;
+    };
+
+    const register = async (email, password) => {
+        const data = await authApi.register(email, password);
+        // Auto login after register? Or just return success
+        return data;
+    };
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+    };
+
     const value = {
-        currentUser
+        currentUser,
+        login,
+        register,
+        logout
     };
 
     return (

@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import Login from './pages/Login'
+import LoginAdmin from './pages/LoginAdmin'
 import Register from './pages/Register'
 import Subscription from './pages/Subscription'
 
@@ -12,6 +13,9 @@ import AdminDashboard from './pages/AdminDashboard'
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { currentUser } = useAuth();
   if (!currentUser) {
+    if (adminOnly) {
+      return <Navigate to="/admin/login" />;
+    }
     return <Navigate to="/login" />;
   }
   // Simple admin check (mock logic: replace with claims or specific email check)
@@ -29,6 +33,7 @@ function App() {
     <div className="min-h-screen bg-slate-900 text-white">
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/admin/login" element={<LoginAdmin />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"

@@ -1,10 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   color-scheme: dark;
-  background-color: #0f172a; /* high-tech dark background */
+  background-color: #0f172a;
+  /* high-tech dark background */
 }
 
 body {

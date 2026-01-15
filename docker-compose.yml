@@ -4,8 +4,9 @@ services:
   phoenixtrade-backend:
     build: .
     container_name: phoenixtrade-backend
-    ports:
-      - "5001:5001"
+
+    # ports:
+    #   - "5001:5001" # Hidden to force usage of PhoenixTrade UI via Nginx
     volumes:
       - ./user:/app/user
       - ./logs:/app/logs
@@ -22,3 +23,32 @@ services:
     depends_on:
       - phoenixtrade-backend
     restart: unless-stopped
+
+  phoenixtrade-saas-api:
+    build: ./phoenixtrade-saas-api
+    container_name: phoenixtrade-saas-api
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=phoenix
+      - DB_PASS=password
+      - DB_NAME=phoenix_db
+      - JWT_SECRET=dev_secret_key_123
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: phoenixtrade-postgres
+    environment:
+      - POSTGRES_USER=phoenix
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=phoenix_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

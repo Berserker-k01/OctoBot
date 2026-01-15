@@ -13,10 +13,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container at /app
-COPY requirements.txt /app/
+COPY requirements.txt full_requirements.txt /app/
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any needed packages specified in requirements.txt and full_requirements.txt
+# We install full dependencies first to ensure extras (like psutil) are installed
+RUN pip install --no-cache-dir -r full_requirements.txt -r requirements.txt
 
 # Copy the rest of the application code
 COPY . /app
