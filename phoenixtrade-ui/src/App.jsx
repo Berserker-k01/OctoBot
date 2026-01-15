@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import LoginAdmin from './pages/LoginAdmin'
 import Register from './pages/Register'
 import Subscription from './pages/Subscription'
+import UserProfile from './pages/UserProfile'
 
 import Dashboard from './pages/Dashboard'
 import AdminDashboard from './pages/AdminDashboard'
@@ -59,7 +60,24 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={
+          <div className="min-h-screen bg-slate-900 text-gray-100 flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-cyan-400 mb-4">Page non trouvée</h1>
+              <p className="text-gray-400 mb-4">La page que vous recherchez n'existe pas.</p>
+              <a href="/" className="text-cyan-400 hover:underline">Retour à l'accueil</a>
+            </div>
+          </div>
+        } />
       </Routes>
     </div>
   )

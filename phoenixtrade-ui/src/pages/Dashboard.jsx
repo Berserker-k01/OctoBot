@@ -6,16 +6,39 @@ export default function Dashboard() {
     const [status, setStatus] = useState('loading');
     const [portfolio, setPortfolio] = useState(null);
     const [profit, setProfit] = useState(null);
+    const [error, setError] = useState(null);
+    const [strategy, setStrategy] = useState(null);
 
     const fetchData = async () => {
-        const statusData = await botService.getStatus();
-        setStatus(statusData.status || 'offline');
+        try {
+            setError(null);
+            const statusData = await botService.getStatus();
+            setStatus(statusData.status || 'offline');
+            setStrategy(statusData.strategy || null);
 
-        if (statusData.status === 'running' || statusData.status === 'online') {
-            const portfolioData = await botService.getPortfolio();
-            setPortfolio(portfolioData);
-            const profitData = await botService.getProfit();
-            setProfit(profitData);
+            // Afficher l'erreur si elle existe dans la réponse
+            if (statusData.error) {
+                setError(statusData.error);
+            }
+
+            if (statusData.status === 'running' || statusData.status === 'online') {
+                try {
+                    const portfolioData = await botService.getPortfolio();
+                    setPortfolio(portfolioData);
+                } catch (err) {
+                    console.warn('Could not fetch portfolio:', err);
+                }
+                try {
+                    const profitData = await botService.getProfit();
+                    setProfit(profitData);
+                } catch (err) {
+                    console.warn('Could not fetch profit:', err);
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching bot data:', err);
+            setError(err.message || 'Impossible de se connecter au bot');
+            setStatus('offline');
         }
     };
 
@@ -35,6 +58,17 @@ export default function Dashboard() {
         fetchData();
     };
 
+    if (status === 'loading') {
+        return (
+            <div className="min-h-screen bg-slate-900 text-gray-100 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-cyan-400 text-xl mb-4">Chargement du dashboard...</div>
+                    <div className="text-gray-400">Connexion au bot en cours</div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-slate-900 text-gray-100 p-8">
             <div className="max-w-7xl mx-auto">
@@ -50,6 +84,25 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </header>
+
+                {error && (
+                    <div className="mb-6 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 p-4 rounded-lg">
+                        <p className="font-semibold">⚠️ API Backend non disponible</p>
+                        <p className="text-sm mt-1">{error}</p>
+                        <p className="text-xs mt-2 text-gray-400">
+                            Le backend OctoBot n'expose pas encore les endpoints API REST nécessaires. 
+                            Le dashboard fonctionne en mode dégradé. Pour activer toutes les fonctionnalités, 
+                            vous devez créer un wrapper API qui expose les endpoints suivants :
+                        </p>
+                        <ul className="text-xs mt-2 text-gray-400 list-disc list-inside">
+                            <li><code>/api/status</code> - Statut du bot</li>
+                            <li><code>/api/portfolio</code> - Informations du portefeuille</li>
+                            <li><code>/api/profitability</code> - Données de profitabilité</li>
+                            <li><code>/api/bot/start</code> - Démarrer le bot</li>
+                            <li><code>/api/bot/stop</code> - Arrêter le bot</li>
+                        </ul>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     {/* Controls */}
@@ -71,8 +124,8 @@ export default function Dashboard() {
                                 <Square className="mr-2" size={20} /> Stop
                             </button>
                         </div>
-                        <p className="text-sm text-gray-400">
-                            {botStatus.strategy ? botStatus.strategy.replace(/OctoBot/g, 'Phoenix') : 'No active strategy'}
+                        <p className="text-sm text-gray-400 mt-2">
+                            {strategy ? strategy.replace(/OctoBot/g, 'Phoenix') : 'No active strategy'}
                         </p>
                     </div>
 
