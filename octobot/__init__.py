@@ -14,7 +14,7 @@
 #  You should have received a copy of the GNU General Public
 #  License along with OctoBot. If not, see <https://www.gnu.org/licenses/>.
 
-PROJECT_NAME = "OctoBot"
+PROJECT_NAME = "PhoenixTrade"
 AUTHOR = "Drakkar-Software"
 VERSION = "2.0.16"  # major.minor.revision
 LONG_VERSION = f"{VERSION}"
