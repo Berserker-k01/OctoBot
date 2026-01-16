@@ -137,7 +137,7 @@ def _create_startup_config(logger, default_config_file):
             if os.path.isdir(tentacles_manager_constants.TENTACLES_PATH):
                 raise
     distribution = configuration_manager.get_distribution(config.config)
-        if distribution is not enums.OctoBotDistribution.DEFAULT:
+    if distribution is not enums.OctoBotDistribution.DEFAULT:
         logger.info(f"Using {distribution.value} {constants.DISPLAY_NAME} distribution.")
 
     return config, is_first_startup
@@ -428,7 +428,6 @@ def start_octobot(args, default_config_file=None):
         logger.error(f"{constants.DISPLAY_NAME} can't start without a valid configuration file.\n"
                      "This file is generated on tentacle "
                      "installation using the following command:\nstart.py tentacles --install --all")
-        force_error_exit = True
     if force_error_exit:
         octobot_community.flush_tracker()
         os._exit(-1)
