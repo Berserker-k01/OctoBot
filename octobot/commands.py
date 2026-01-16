@@ -97,7 +97,7 @@ def run_update_or_repair_tentacles_if_necessary(community_auth, config, tentacle
 def _check_tentacles_install_exit():
     if constants.EXIT_BEFORE_TENTACLES_AUTO_REINSTALL:
         logging.get_logger(COMMANDS_LOGGER_NAME).info(
-            "Exiting OctoBot before re-installing tentacles as EXIT_BEFORE_TENTACLES_AUTO_REINSTALL is True")
+            f"Exiting {constants.DISPLAY_NAME} before re-installing tentacles as EXIT_BEFORE_TENTACLES_AUTO_REINSTALL is True")
         sys.exit(0)
 
 
@@ -120,9 +120,9 @@ async def update_or_repair_tentacles_if_necessary(community_auth, selected_profi
                 selected_profile_tentacles_setup_config
             )
             logger.info(f"Current imported profile \"{config.profile.name}\" references tentacles in a different "
-                        f"version from the current OctoBot. Referenced version: "
-                        f"{selected_profile_tentacles_version}, current OctoBot version: {constants.VERSION}. "
-                        f"Please make sure that this profile works on your OctoBot.")
+                        f"version from the current {constants.DISPLAY_NAME}. Referenced version: "
+                        f"{selected_profile_tentacles_version}, current {constants.DISPLAY_NAME} version: {constants.VERSION}. "
+                        f"Please make sure that this profile works on your {constants.DISPLAY_NAME}.")
             # only update tentacles based on local (non imported) profiles tentacles installation version
             local_profile_tentacles_setup_config = _get_first_non_imported_profile_tentacles_setup_config(config)
 
@@ -137,10 +137,10 @@ async def update_or_repair_tentacles_if_necessary(community_auth, selected_profi
 
     if local_profile_tentacles_setup_config is None or \
             not tentacles_manager_api.are_tentacles_up_to_date(local_profile_tentacles_setup_config, constants.VERSION):
-        logger.info("OctoBot tentacles are not up to date. Updating tentacles...")
+        logger.info(f"{constants.DISPLAY_NAME} tentacles are not up to date. Updating tentacles...")
         _check_tentacles_install_exit()
         if await install_or_update_tentacles(config, to_install_urls, False):
-            logger.info("OctoBot tentacles are now up to date.")
+            logger.info(f"{constants.DISPLAY_NAME} tentacles are now up to date.")
     else:
         if to_install_urls:
             logger.debug("Installing new tentacles.")
@@ -148,9 +148,9 @@ async def update_or_repair_tentacles_if_necessary(community_auth, selected_profi
             only_additional = tentacles_manager_api.is_tentacles_architecture_valid()
             await install_or_update_tentacles(config, to_install_urls, only_additional)
         if tentacles_manager_api.load_tentacles(verbose=True):
-            logger.debug("OctoBot tentacles are up to date.")
+            logger.debug(f"{constants.DISPLAY_NAME} tentacles are up to date.")
         else:
-            logger.info("OctoBot tentacles are damaged. Installing default tentacles only ...")
+            logger.info(f"{constants.DISPLAY_NAME} tentacles are damaged. Installing default tentacles only ...")
             _check_tentacles_install_exit()
             await install_or_update_tentacles(config, [], False)
 

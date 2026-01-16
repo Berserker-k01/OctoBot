@@ -68,7 +68,7 @@ class TaskManager:
         self.init_async_loop()
         self.bot_main_task = self.async_loop.create_task(coroutine)
         self.async_loop.run_forever()
-        self.logger.debug("Stopped OctoBot main loop")
+        self.logger.debug(f"Stopped {constants.DISPLAY_NAME} main loop")
 
     def run_forever(self, coroutine):
         if constants.RUN_IN_MAIN_THREAD:
@@ -76,7 +76,7 @@ class TaskManager:
         else:
             self.loop_forever_thread = threading.Thread(
                 target=self.run_bot_in_thread, args=(coroutine,),
-                name="OctoBot Main Thread")
+                name=f"{constants.DISPLAY_NAME} Main Thread")
             self.loop_forever_thread.start()
             if sys.version_info.minor >= 9:
                 # only required for python 3.9 +

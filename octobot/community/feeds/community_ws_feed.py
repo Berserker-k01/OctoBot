@@ -246,7 +246,7 @@ class CommunityWSFeed(abstract_feed.AbstractFeed):
         if self.authenticator.initialized_event is not None:
             await asyncio.wait_for(self.authenticator.initialized_event.wait(), self.INIT_TIMEOUT)
         if not self.authenticator.is_logged_in():
-            raise authentication.AuthenticationRequired("OctoBot Community authentication is required to "
+            raise authentication.AuthenticationRequired(f"{constants.DISPLAY_NAME} Community authentication is required to "
                                                         "use community trading signals")
         self.websocket_connection = await websockets.asyncio.client.connect(
             self.feed_url, additional_headers=self.authenticator.get_backend_headers(), ping_interval=None

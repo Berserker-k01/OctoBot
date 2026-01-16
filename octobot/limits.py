@@ -41,7 +41,7 @@ def _apply_exchanges_limits(dict_config, logger, limit):
                     config[common_constants.CONFIG_ENABLED_OPTION] = False
                     logger.error("Disabled " + exchange)
         return f"Reached maximum allowed simultaneous exchanges for this plan, maximum is {limit}. " \
-               f"Your OctoBot will trade on the following exchanges: {', '.join(enabled_exchanges)}"
+               f"Your {constants.DISPLAY_NAME} will trade on the following exchanges: {', '.join(enabled_exchanges)}"
     return ""
 
 
@@ -74,7 +74,7 @@ def _apply_symbols_limits(dict_config, logger, limit):
             crypto_currency_data[common_constants.CONFIG_CRYPTO_PAIRS] = updated_symbols
     if has_disabled_symbols:
         return f"{message}Reached maximum allowed simultaneous trading pairs for this plan, maximum is {limit}. " \
-               f"Your OctoBot will trade following pairs: {', '.join(enabled_symbols)}."
+               f"Your {constants.DISPLAY_NAME} will trade following pairs: {', '.join(enabled_symbols)}."
     return message
 
 
@@ -125,7 +125,7 @@ def _apply_time_frames_limits(full_config, logger, limit):
                 )
     if has_disabled_time_frames:
         return f"Reached maximum allowed simultaneous time frames for this plan, maximum is {limit}. " \
-           f"Your OctoBot will trade using following time frames: " \
+           f"Your {constants.DISPLAY_NAME} will trade using following time frames: " \
                f"{', '.join([tf.value for tf in all_enabled_time_frames])}."
     return ""
 

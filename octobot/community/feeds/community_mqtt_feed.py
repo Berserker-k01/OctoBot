@@ -343,7 +343,7 @@ class CommunityMQTTFeed(abstract_feed.AbstractFeed):
                 else:
                     self.logger.error(f"Max subscription attempts reached, stopping subscription "
                                       f"to {[s.topic for s in subscriptions]}. Are you subscribing to this "
-                                      f"strategy on your OctoBot account ?")
+                                      f"strategy on your {constants.DISPLAY_NAME} account ?")
                     self.subscribed = False
                     return
             else:

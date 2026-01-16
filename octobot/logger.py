@@ -56,9 +56,9 @@ def init_logger():
         init_bot_channel_logger()
     except KeyError:
         print(
-            "Impossible to start OctoBot: the logging configuration can't be found in '"
+            f"Impossible to start {constants.DISPLAY_NAME}: the logging configuration can't be found in '"
             + constants.LOGGING_CONFIG_FILE
-            + "' please make sure you are running OctoBot from its root directory."
+            + f"' please make sure you are running {constants.DISPLAY_NAME} from its root directory."
         )
         os._exit(-1)
 
@@ -69,8 +69,8 @@ def init_logger():
         logger.parent.handlers[1].doRollover()
     except PermissionError:
         print(
-            "Impossible to start OctoBot: the logging file is locked, this is probably due to another running "
-            "OctoBot instance."
+            f"Impossible to start {constants.DISPLAY_NAME}: the logging file is locked, this is probably due to another running "
+            f"{constants.DISPLAY_NAME} instance."
         )
         os._exit(-1)
 

@@ -260,7 +260,7 @@ class CommunitySupabaseClient(supabase_client.AuthenticatedAsyncSupabaseClient):
             if err.code == error_translator.EMAIL_NOT_CONFIRMED_ERROR:
                 raise errors.EmailValidationRequiredError(translated_error) from err
             raise authentication.AuthenticationError(
-                f"Please re-login to your OctoBot account: {translated_error}"
+                f"Please re-login to your {constants.DISPLAY_NAME} account: {translated_error}"
             ) from err
 
     async def get_otp_with_auth_key(self, user_email: str, auth_key: str) -> str:
@@ -1259,7 +1259,7 @@ class CommunitySupabaseClient(supabase_client.AuthenticatedAsyncSupabaseClient):
     async def _get_user(self) -> supabase_auth.User:
         if user := await self.auth.get_user():
             return user.user
-        raise authentication.AuthenticationError("Please login to your OctoBot account")
+        raise authentication.AuthenticationError(f"Please login to your {constants.DISPLAY_NAME} account")
 
     async def aclose(self):
         await super().aclose()
@@ -1282,5 +1282,5 @@ def jwt_expired_auth_raiser():
         yield
     except postgrest.exceptions.APIError as err:
         if _is_jwt_expired_error(err):
-            raise errors.JWTExpiredError(f"Please re-login to your OctoBot account: {err}") from err
+            raise errors.JWTExpiredError(f"Please re-login to your {constants.DISPLAY_NAME} account: {err}") from err
         raise

@@ -52,7 +52,7 @@ try:
     import octobot.limits as limits
 except ImportError as err:
     print(
-        "Error importing OctoBot dependencies, please install OctoBot with the [full] option. "
+        f"Error importing {constants.DISPLAY_NAME} dependencies, please install {constants.DISPLAY_NAME} with the [full] option. "
         "Example: \"pip install -U octobot[full]\" "
         "(Error: {0}: {1})".format(err.__class__.__name__, str(err)), file=sys.stderr
     )
@@ -103,7 +103,7 @@ def _disable_interface_from_param(interface_identifier, param_value, logger):
 def _log_environment(logger):
     try:
         bot_type = "cloud" if constants.IS_CLOUD_ENV else "self-hosted"
-        logger.info(f"Running {bot_type} OctoBot on {os_util.get_current_platform()} "
+        logger.info(f"Running {bot_type} {constants.DISPLAY_NAME} on {os_util.get_current_platform()} "
                     f"with {os_util.get_octobot_type()} "
                     f"[Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}]")
     except Exception as e:
@@ -137,8 +137,8 @@ def _create_startup_config(logger, default_config_file):
             if os.path.isdir(tentacles_manager_constants.TENTACLES_PATH):
                 raise
     distribution = configuration_manager.get_distribution(config.config)
-    if distribution is not enums.OctoBotDistribution.DEFAULT:
-        logger.info(f"Using {distribution.value} OctoBot distribution.")
+        if distribution is not enums.OctoBotDistribution.DEFAULT:
+        logger.info(f"Using {distribution.value} {constants.DISPLAY_NAME} distribution.")
 
     return config, is_first_startup
 
@@ -278,12 +278,12 @@ def _validate_config(config, logger):
         if configuration_manager.migrate_from_previous_config(config):
             logger.info("Your configuration has been migrated into the newest format.")
         else:
-            logger.error("OctoBot can't repair your config.json file: invalid format: " + str(err))
+            logger.error(f"{constants.DISPLAY_NAME} can't repair your config.json file: invalid format: " + str(err))
             raise errors.ConfigError from err
 
 
 def _repair_with_default_profile(config, logger):
-    logger.error("OctoBot can't start without a valid profile configuration. Selecting default profile ...")
+    logger.error(f"{constants.DISPLAY_NAME} can't start without a valid profile configuration. Selecting default profile ...")
     configuration_manager.set_default_profile(config)
     config.load_profiles_if_possible_and_necessary()
 
@@ -301,7 +301,7 @@ def _load_or_create_tentacles(community_auth, config, logger):
         commands.run_update_or_repair_tentacles_if_necessary(community_auth, config, tentacles_setup_config)
     else:
         # when no tentacles folder has been found
-        logger.info("OctoBot tentacles can't be found. Installing default tentacles ...")
+        logger.info(f"{constants.DISPLAY_NAME} tentacles can't be found. Installing default tentacles ...")
         commands.run_tentacles_install_or_update(community_auth, config)
         config.load_profiles_if_possible_and_necessary()
 
@@ -397,35 +397,35 @@ def start_octobot(args, default_config_file=None):
         force_error_exit = True
 
     except errors.ConfigError as err:
-        logger.error("OctoBot can't start without a valid " + common_constants.CONFIG_FILE
+        logger.error(f"{constants.DISPLAY_NAME} can't start without a valid " + common_constants.CONFIG_FILE
                      + " configuration file.\nError: " + str(err) + "\nYou can use " +
                      constants.DEFAULT_CONFIG_FILE + " as an example to fix it.")
         force_error_exit = True
 
     except errors.NoProfileError:
-        logger.error("Missing default profiles. OctoBot can't start without a valid default profile configuration. "
+        logger.error(f"Missing default profiles. {constants.DISPLAY_NAME} can't start without a valid default profile configuration. "
                      "Please make sure that the {config.profiles_path} "
                      f"folder is accessible. To reinstall default profiles, delete the "
                      f"'{tentacles_manager_constants.TENTACLES_PATH}' "
-                     f"folder or start OctoBot with the following arguments: tentacles --install --all")
+                     f"folder or start {constants.DISPLAY_NAME} with the following arguments: tentacles --install --all")
         force_error_exit = True
 
     except ModuleNotFoundError as err:
         if 'tentacles' in str(err):
-            logger.error("Impossible to start OctoBot, tentacles are missing.\nTo install tentacles, "
+            logger.error(f"Impossible to start {constants.DISPLAY_NAME}, tentacles are missing.\nTo install tentacles, "
                          "please use the following command:\nstart.py tentacles --install --all")
         else:
             logger.exception(err)
         force_error_exit = True
 
     except errors.ConfigEvaluatorError:
-        logger.error("OctoBot can't start without a valid  configuration file.\n"
+        logger.error(f"{constants.DISPLAY_NAME} can't start without a valid  configuration file.\n"
                      "This file is generated on tentacle "
                      "installation using the following command:\nstart.py tentacles --install --all")
         force_error_exit = True
 
     except errors.ConfigTradingError:
-        logger.error("OctoBot can't start without a valid configuration file.\n"
+        logger.error(f"{constants.DISPLAY_NAME} can't start without a valid configuration file.\n"
                      "This file is generated on tentacle "
                      "installation using the following command:\nstart.py tentacles --install --all")
         force_error_exit = True
@@ -435,18 +435,18 @@ def start_octobot(args, default_config_file=None):
 
 
 def octobot_parser(parser, default_config_file=None):
-    parser.add_argument('-v', '--version', help='Show OctoBot current version.',
+    parser.add_argument('-v', '--version', help=f'Show {constants.DISPLAY_NAME} current version.',
                         action='store_true')
-    parser.add_argument('-s', '--simulate', help='Force OctoBot to start with the trader simulator only.',
+    parser.add_argument('-s', '--simulate', help=f'Force {constants.DISPLAY_NAME} to start with the trader simulator only.',
                         action='store_true')
-    parser.add_argument('-u', '--update', help='Update OctoBot to latest version.',
+    parser.add_argument('-u', '--update', help=f'Update {constants.DISPLAY_NAME} to latest version.',
                         action='store_true')
     parser.add_argument('-rts', '--reset-trading-history', help='Force the traders to reset their history. They will '
                                                                 'now take the next portfolio as a reference for '
                                                                 'profitability and trading simulators will use a '
                                                                 'fresh new portfolio.',
                         action='store_true')
-    parser.add_argument('-b', '--backtesting', help='Start OctoBot in backesting mode using the backtesting '
+    parser.add_argument('-b', '--backtesting', help=f'Start {constants.DISPLAY_NAME} in backesting mode using the backtesting '
                                                     'config stored in config.json.',
                         action='store_true')
     parser.add_argument('-bf', '--backtesting-files', type=str, nargs='+',
@@ -461,12 +461,12 @@ def octobot_parser(parser, default_config_file=None):
                              'When disabled, the backtesting run will not be interrupted during execution',
                         action='store_true')
     parser.add_argument('-r', '--risk', type=float, help='Force a specific risk configuration (between 0 and 1).')
-    parser.add_argument('-nw', '--no_web', help="Don't start OctoBot web interface.",
+    parser.add_argument('-nw', '--no_web', help=f"Don't start {constants.DISPLAY_NAME} web interface.",
                         action='store_true')
-    parser.add_argument('-nl', '--no_logs', help="Disable OctoBot logs in backtesting.",
+    parser.add_argument('-nl', '--no_logs', help=f"Disable {constants.DISPLAY_NAME} logs in backtesting.",
                         action='store_true')
-    parser.add_argument('-nt', '--no-telegram', help='Start OctoBot without telegram interface, even if telegram '
-                                                     'credentials are in config. With this parameter, your Octobot '
+    parser.add_argument('-nt', '--no-telegram', help=f'Start {constants.DISPLAY_NAME} without telegram interface, even if telegram '
+                                                     'credentials are in config. With this parameter, your bot '
                                                      'won`t reply to any telegram command but is still able to listen '
                                                      'to telegram feed and send telegram notifications',
                         action='store_true')
@@ -474,9 +474,9 @@ def octobot_parser(parser, default_config_file=None):
                                             " exchanges configuration in your config.json without using any interface "
                                             "(ie the web interface that handle encryption automatically).",
                         action='store_true')
-    parser.add_argument('--identifier', help="OctoBot community identifier.", type=str, nargs=1)
-    parser.add_argument('-o', '--strategy_optimizer', help='Start Octobot strategy optimizer. This mode will make '
-                                                           'octobot play backtesting scenarii located in '
+    parser.add_argument('--identifier', help=f"{constants.DISPLAY_NAME} community identifier.", type=str, nargs=1)
+    parser.add_argument('-o', '--strategy_optimizer', help=f'Start {constants.DISPLAY_NAME} strategy optimizer. This mode will make '
+                                                           'the bot play backtesting scenarii located in '
                                                            'abstract_strategy_test.py with different timeframes, '
                                                            'evaluators and risk using the trading mode set in '
                                                            'config.json. This tool is useful to quickly test a '
@@ -491,7 +491,7 @@ def octobot_parser(parser, default_config_file=None):
     subparsers = parser.add_subparsers(title="Other commands")
 
     # tentacles manager
-    tentacles_parser = subparsers.add_parser("tentacles", help='Calls OctoBot tentacles manager.\n'
+    tentacles_parser = subparsers.add_parser("tentacles", help=f'Calls {constants.DISPLAY_NAME} tentacles manager.\n'
                                                                'Use "tentacles --help" to get the '
                                                                'tentacles manager help.')
     tentacles_manager_cli.register_tentacles_manager_arguments(tentacles_parser)
@@ -547,7 +547,7 @@ def start_background_octobot_with_args(
 def main(args=None, default_config_file=None):
     if not args:
         args = sys.argv[1:]
-    parser = argparse.ArgumentParser(description='OctoBot')
+    parser = argparse.ArgumentParser(description=constants.DISPLAY_NAME)
     octobot_parser(parser, default_config_file=default_config_file)
 
     MIN_TENTACLE_MANAGER_VERSION = "1.0.10"
@@ -557,12 +557,12 @@ def main(args=None, default_config_file=None):
         from octobot_tentacles_manager import VERSION
 
         if packaging_version.Version(VERSION) < packaging_version.Version(MIN_TENTACLE_MANAGER_VERSION):
-            print("OctoBot requires OctoBot-Tentacles-Manager in a minimum version of " + MIN_TENTACLE_MANAGER_VERSION +
+            print(f"{constants.DISPLAY_NAME} requires OctoBot-Tentacles-Manager in a minimum version of " + MIN_TENTACLE_MANAGER_VERSION +
                   " you can install and update OctoBot-Tentacles-Manager using the following command: "
                   "python3 -m pip install -U OctoBot-Tentacles-Manager", file=sys.stderr)
             sys.exit(-1)
     except ImportError:
-        print("OctoBot requires OctoBot-Tentacles-Manager, you can install it using "
+        print(f"{constants.DISPLAY_NAME} requires OctoBot-Tentacles-Manager, you can install it using "
               "python3 -m pip install -U OctoBot-Tentacles-Manager", file=sys.stderr)
         sys.exit(-1)
 

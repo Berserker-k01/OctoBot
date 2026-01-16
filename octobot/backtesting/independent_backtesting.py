@@ -40,6 +40,7 @@ import octobot_trading.api as trading_api
 import octobot_trading.enums as trading_enums
 
 import octobot.storage as storage
+import octobot.constants as constants
 
 
 class IndependentBacktesting:
@@ -326,7 +327,7 @@ class IndependentBacktesting:
             for symbol in self.symbols_to_create_exchange_classes[exchange_name]:
                 self._log_symbol_report(symbol, exchange_manager, min_timeframe)
 
-            self.logger.info(" ========= Octobot end state =========")
+            self.logger.info(f" ========= {constants.DISPLAY_NAME} end state =========")
             self._log_global_report(exchange_manager)
 
     def _log_trades_history(self, exchange_manager, exchange_name):
@@ -353,7 +354,7 @@ class IndependentBacktesting:
                          f"Holdings: {pretty_printer.global_portfolio_pretty_print(starting_portfolio, separator=' | ')}")
 
         self.logger.info(f"Global market profitability (vs {reference_market}) : "
-                         f"{market_average_profitability}% | Octobot : {profitability}%")
+                         f"{market_average_profitability}% | {constants.DISPLAY_NAME} : {profitability}%")
 
         self.logger.debug(
             f"Simulation lasted "

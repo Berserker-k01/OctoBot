@@ -149,7 +149,7 @@ class OctoBot:
         # make tentacles setup config editable while saving previous states
         self.configuration_manager.add_element(constants.TENTACLES_SETUP_CONFIG_KEY, self.tentacles_setup_config)
         await service_api.send_notification(
-            service_api.create_notification(f"{constants.PROJECT_NAME} {constants.LONG_VERSION} is starting ...",
+            service_api.create_notification(f"{constants.DISPLAY_NAME} {constants.LONG_VERSION} is starting ...",
                                             markdown_format=commons_enums.MarkdownFormat.ITALIC)
         )
         if self.startup_messages:
@@ -253,7 +253,7 @@ class OctoBot:
     async def _on_profile_update(self, profile_name: str):
         await service_api.send_notification(
             service_api.create_notification(
-                f"{constants.PROJECT_NAME} will restart in {constants.PROFILE_UPDATE_RESTART_MIN} minutes "
+                f"{constants.DISPLAY_NAME} will restart in {constants.PROFILE_UPDATE_RESTART_MIN} minutes "
                 f"to apply the {profile_name} profile update.",
                 markdown_format=commons_enums.MarkdownFormat.ITALIC
             )
@@ -289,7 +289,7 @@ class OctoBot:
             # no active trading mode
             self.logger.warning(f"Failed to get activated trading mode: {err}" )
         trading_mode_str = trading_mode.get_name() if trading_mode else "no trading mode"
-        self.logger.info(f"Starting OctoBot with {trader_str} on "
+        self.logger.info(f"Starting {constants.DISPLAY_NAME} with {trader_str} on "
                          f"{', '.join(exchanges) if exchanges else 'no exchange'} "
                          f"trading {symbols_str or 'nothing'} with {trading_mode_str} and using bot_id: {self.bot_id}")
 

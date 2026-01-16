@@ -97,7 +97,7 @@ def config_health_check(config: configuration.Configuration, in_backtesting: boo
     if not (in_backtesting or
             trading_api.is_trader_enabled_in_config(config.config) or
             trading_api.is_trader_simulator_enabled_in_config(config.config)):
-        logger.error(f"Real trader and trader simulator are deactivated in configuration. This will prevent OctoBot "
+        logger.error(f"Real trader and trader simulator are deactivated in configuration. This will prevent {constants.DISPLAY_NAME} "
                      f"from creating any new order.")
 
     # 4 save fixed config if necessary

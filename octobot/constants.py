@@ -31,6 +31,9 @@ from octobot import (
     LONG_VERSION,
 )
 
+# Display name for user interface (visible to users)
+DISPLAY_NAME = "PhoenixTrade"
+
 # load environment variables from .env file if exists
 DOTENV_PATH = os.getenv("DOTENV_PATH", os.path.curdir)
 dotenv.load_dotenv(os.path.join(DOTENV_PATH, ".env"), verbose=False)
